@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from "axios"
 import { API_URL } from './utils/api';
+import { Container } from '@mui/material';
 
 export type DataItem = (string | number | {})[];
 
@@ -36,7 +37,7 @@ const DataList: React.FC = () => {
 	}, []);
 
 	return (
-		<div>
+		<Container maxWidth="sm">
 			<h1>Filtered Data List</h1>
 			<ul className='rows'>
 				{value.map((row, rowIndex) => (
@@ -49,7 +50,7 @@ const DataList: React.FC = () => {
 					</li>
 				))}
 			</ul>
-		</div>
+		</Container>
 	);
 };
 
