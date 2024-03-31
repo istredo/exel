@@ -1,55 +1,42 @@
 import React from 'react'
 import axios from "axios"
-import { API_URL } from './utils/api';
-import { Container } from '@mui/material';
+import { API_URL2 } from './utils/api';
+import { Button, Container } from '@mui/material';
+import { DataItem } from './utils/types';
 
-export type DataItem = (string | number | {})[];
 
-type FilteredDataItem = (string | number)[];
 
 const DataList: React.FC = () => {
-	const [value, setValue] = React.useState<FilteredDataItem[]>([]);
+	const [value, setValue] = React.useState<DataItem[]>([]);
 
-	function filterEmptyItems(data: DataItem[]): FilteredDataItem[] {
-		return data.map(row => row.filter(item => {
-			if (typeof item === 'object') {
-				return false; // Тут можно сделать проверку на вложенный список при необходимости
-			} else {
-				return true;
-			}
-		})).filter(row => row.length > 0)
-			.map(row => row.map(item => typeof item === 'string' ? item : Number(item)));
-	}
 
+
+	const fetchExcel = async () => {
+		try {
+			const { data } = await axios.get<DataItem[]>(API_URL2);
+			const filteredData = data.filter(item => typeof item.FakePrice === 'number' && !isNaN(item.FakePrice));
+			setValue(filteredData);
+
+		} catch (error) {
+			console.error("Error fetching data:", error);
+		}
+	};
 	React.useEffect(() => {
-		const fetchExcel = async () => {
-			try {
-				const { data } = await axios.get<DataItem[]>(API_URL);
-				const filteredData = filterEmptyItems(data);
-				setValue(filteredData);
-
-			} catch (error) {
-				console.error("Error fetching data:", error);
-			}
-		};
-
 		fetchExcel();
 	}, []);
 
 	return (
-		<Container maxWidth="sm">
+		<Container maxWidth='xs' className='data__container'>
 			<h1>Filtered Data List</h1>
-			<ul className='rows'>
-				{value.map((row, rowIndex) => (
-					<li key={rowIndex}>
-						<ul className='columns'>
-							{row.map((item, itemIndex) => (
-								<li key={itemIndex} className='columns_item'>{item}</li>
-							))}
-						</ul>
+			<ul className='data__list'>
+				{value.map((item, index) => (
+					<li key={index} className='rows'>
+						<span className='columns_item'> {item.FakeData}</span>
+						<span className='columns_item'> {item.FakePrice}</span>
 					</li>
 				))}
 			</ul>
+			<Button variant="contained" onClick={() => fetchExcel()}>refresh list</Button>
 		</Container>
 	);
 };

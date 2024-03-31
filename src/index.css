@@ -120,11 +120,7 @@ label {
 
 .rows {
 	display: flex;
-	flex-direction: column;
-}
-.columns {
-	display: flex;
-	/* width: 00px; */
+	margin: 5px 0;
 }
 
 .columns_item {
@@ -132,4 +128,10 @@ label {
 }
 .columns_item:first-child {
 	width: 300px;
+}
+.data__list {
+	margin: 20px 0;
+}
+.data__container {
+	margin-top: 4vh;
 }
